@@ -20,6 +20,7 @@ import { View,
   Image,
   TextInput,
   Keyboard, 
+  Linking
 } from 'react-native'
 
 import { showMessage } from 'react-native-flash-message'
@@ -330,6 +331,19 @@ export default function Register( { navigation } ) {
                 </Text>
               </TouchableOpacity>
 
+              <TouchableOpacity
+                style={styles.contact}
+                activeOpacity={.8}
+                onPress={() => Linking.openURL('whatsapp://send?text=Hola!&phone=573044285676')}
+              >
+                <Text
+                style={{
+                  fontFamily: 'Raleway-Light',
+                  fontSize: hp('2.5%')
+                }}>
+                  Contactanos
+                </Text>
+              </TouchableOpacity>
             </View>
 
           </View>
@@ -411,6 +425,9 @@ const styles = StyleSheet.create({
   signInText:{
     fontFamily: 'Raleway-Light',
     fontSize: hp('2.5%')
+  },
+  contact:{
+    marginBottom: 20
   },
   pickerResidence: {
     color: '#000000a1',

@@ -20,13 +20,15 @@ import { View,
   Keyboard, 
   BackHandler, 
   Alert, 
-  Platform
+  Platform,
+  Linking
 } from 'react-native'
 
 import SelectResidence from '../selectResidence/selectResidence'
 import QrIcon from '../qrIcon/qrIcon'
 import CovidQuestions from '../covidQuestions/covidQuestions'
 import CovidAlert from '../covidAlert/covidAlert'
+import SubAdminModal from '../subAdminModal/subAdminModal';
 
 export default function SignIn( { navigation, route } ) {
 
@@ -34,6 +36,8 @@ export default function SignIn( { navigation, route } ) {
 
   const actualRoute = useRoute()
 
+  const [ subAdminData, setSubAdminData ] = useState('')
+  const [ showSubAdminModal, setShowSubAdminModal ] = useState(false)
   const [ disableButton, setDisableButton ]= useState(false)
   const [ showCovidAlert, setShowCovidAlert ] = useState(false)
   const [ showModal, setShowModal ] = useState(false)
@@ -79,18 +83,17 @@ export default function SignIn( { navigation, route } ) {
     return true;
   }
 
-  const routeSubAdmin = () => {
-    showMessage({
-      icon: 'info',
-      type: 'info',
-      message: 'Subadmin',
-      description: 'Muy pronto podrás ingresar a la sección de subadmin desde la aplicacion, sigue usando la web de momento',
-      duration: 3000,
-      floating: true,
-      titleStyle:{
-        fontSize: 17
+  const routeSubAdmin = (redirect) => {
+
+    if(redirect === 'subadmin'){
+      navigation.navigate('SubAdmin', { actualUser: subAdminData[0], places: subAdminData[1] })
+    }else{
+      if(subAdminData[1][1]){
+        navigation.navigate('Switch', { actualUser: subAdminData, places: subAdminData[1]})
+      }else{
+        navigation.navigate('Schedule', { place: subAdminData[1][0].place, actualUser: subAdminData } )
       }
-    })
+    }
   }
 
   const validateData = () => {
@@ -207,7 +210,8 @@ export default function SignIn( { navigation, route } ) {
       }else if(data[2] === 'subadmin'){
 
         data.splice(2, 1)
-        routeSubAdmin(data)
+        setSubAdminData(data)
+        setShowSubAdminModal(true)
 
       }else if(data[0]){
         navigation.setParams({actualUser: data})
@@ -236,6 +240,12 @@ export default function SignIn( { navigation, route } ) {
       <CovidAlert 
         visible={showCovidAlert}
         setShowCovidAlert={setShowCovidAlert}        
+      />
+
+      <SubAdminModal 
+        visible={showSubAdminModal}
+        setShowSubAdminModal={setShowSubAdminModal}
+        routeSubAdmin={routeSubAdmin}
       />
       
       <CovidQuestions
@@ -330,6 +340,19 @@ export default function SignIn( { navigation, route } ) {
                 </Text>
               </TouchableOpacity>
 
+              <TouchableOpacity
+                style={styles.contact}
+                activeOpacity={.8}
+                onPress={() => Linking.openURL('whatsapp://send?text=Hola!&phone=573044285676')}
+              >
+                <Text
+                style={{
+                  fontFamily: 'Raleway-Light',
+                  fontSize: hp('2.5%')
+                }}>
+                  Contactanos
+                </Text>
+              </TouchableOpacity>
             </View>
 
           </View>
@@ -411,6 +434,9 @@ const styles = StyleSheet.create({
   registerButtonText:{
     fontFamily: 'Raleway-Light',
     fontSize: hp('2.5%'),
+  },
+  contact:{
+    marginBottom: 20
   },
   pickerSection:{
     justifyContent: 'center',

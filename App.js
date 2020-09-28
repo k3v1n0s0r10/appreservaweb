@@ -12,6 +12,7 @@ import Register from './src/components/register/register'
 import QrScanner from './src/components/qrScanner/qrScanner'
 import Switch from './src/components/switch/switch';
 import Schedule from './src/components/schedule/schedule';
+import SubAdmin from './src/components/subAdmin/subAdmin';
 
 const Stack = createStackNavigator();
 
@@ -53,6 +54,11 @@ export default function App() {
         <Stack.Screen 
           name="Schedule"
           component={Schedule}
+        />
+
+        <Stack.Screen 
+          name="SubAdmin"
+          component={SubAdmin}
         />
 
       </Stack.Navigator>
